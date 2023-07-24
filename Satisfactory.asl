@@ -1,7 +1,7 @@
 /*
 Satisfactory AutoSplitter
 
-Heavily Inspired By Epiphane's ASL: https://raw.githubusercontent.com/Epiphane/AutoSplitHelper/master/Splitter.asl 
+Heavily Inspired By Epiphane's AutoSplitter: https://github.com/Epiphane/AutoSplitHelper/ 
 
 Feel free to join the Satisfactory Speedrunners Discord for any help troubleshooting: https://discord.gg/Uj5y76NqCt
 */
@@ -45,11 +45,9 @@ startup {
 
         // Tier 5
         { "Oil Processing",               "Schematic_5-1_C" },
-        { "Oil Processing 2",             "Schematic_5-1-1_C" },
         { "Industrial Manufacturing",     "Schematic_5-2_C" },
         { "Logistics Mk.3",               "Schematic_5-3_C" },
         { "Alternative Fluid Transport",  "Schematic_5-4_C" },
-        { "Alternative Fluid Transport 2","Schematic_5-4-1_C" },
 
         // Tier 6
         { "Expanded Power Infrastructure","Schematic_6-1_C" },
@@ -60,25 +58,107 @@ startup {
         
         // Tier 7
         { "Bauxite Refinement",           "Schematic_7-1_C" },
-        { "Bauxite Refinement 2",         "Schematic_7-1-1_C" },
         { "Logistics Mk.5",               "Schematic_7-2_C" },
         { "Hazmat Suit",                  "Schematic_7-3_C" },
         { "Aeronautical Engineering",     "Schematic_7-4_C" },
-        { "Aeronautical Engineering 2",   "Schematic_7-4-1_C" },
         
         // Tier 8
         { "Nuclear Power",                  "Schematic_8-1_C" },
         { "Advanced Aluminum Production",   "Schematic_8-2_C" },
-        { "Advanced Aluminum Production 2", "Schematic_8-2-1_C" },
         { "Hover Pack",                     "Schematic_8-3_C" },
         { "Leading-edge Production",        "Schematic_8-4_C" },
         { "Particle Enrichment",            "Schematic_8-5_C" },
-        { "Particle Enrichment 2",          "Schematic_8-5-1_C" },
+
+        // Alien Organisms
+        { "Hog Research",                       "Research_ACarapace_0_C" },
+        { "The Rebar Gun",                      "Research_ACarapace_2_C" },
+        { "Expanded Tool Belt",                 "Research_ACarapace_3_C" },
+        { "Hostile Organism Detection",         "Research_AOrganisms_2_C" },
+        { "Protein Inhaler",                    "Research_AOrgans_2_C" },
+        { "Inflated Pocket Dimension (Alien)",  "Research_AOrgans_3_C" },
+        { "Bio-Organic Properties",             "Research_AO_DNACapsule_C" },
+        { "Hatcher Research",                   "Research_AO_Hatcher_C" },
+        { "Structural Analysis",                "Research_AO_Pre_Rebar_C" },
+        { "Spitter Research",                   "Research_AO_Spitter_C" },
+        { "Stinger Research",                   "Research_AO_Stinger_C" },
+
+        // Caterium
+        { "Caterium",               "Research_Caterium_0_C" },
+        { "Caterium Ingots",        "Research_Caterium_1_C" },
+        { "Quickwire",              "Research_Caterium_2_C" },
+        { "Zipline",                "Research_Caterium_2_1_C" },
+        { "Caterium Electronics",   "Research_Caterium_3_C" },
+        { "Stun Rebar",             "Research_Caterium_3_2_C" },
+        { "AI Limiter",             "Research_Caterium_4_1_C" },
+        { "Smart Splitter",         "Research_Caterium_4_1_1_C" },
+        { "Power Switch",           "Research_Caterium_4_1_2_C" },
+        { "Power Poles Mk.2",       "Research_Caterium_4_2_C" },
+        { "High-Speed Connector",   "Research_Caterium_5_C" },
+        { "Supercomputer",          "Research_Caterium_6_1_C" },
+        { "Power Poles Mk.3",       "Research_Caterium_6_2_C" },
+        { "Bullet Guidance System", "Research_Caterium_6_3_C" },
+        { "Programmable Splitter",  "Research_Caterium_7_1_C" },
+        { "Geothermal Generator",   "Research_Caterium_7_2_C" },
+        
+        // Mycelia
+        { "Mycelia",                        "Research_Mycelia_1_C" },
+        { "Fabric",                         "Research_Mycelia_2_C" },
+        { "Synthetic Polyester Fabric",     "Research_Mycelia_2_1_C" },
+        { "Parachute",                      "Research_Mycelia_3_C" },
+        { "Medical Properties",             "Research_Mycelia_4_C" },
+        { "Vitamin Inhaler",                "Research_Mycelia_5_C" },
+        { "Therapeutic Inhaler",            "Research_Mycelia_6_C" },
+        { "Expanded Toolbelt (Mycelia)",    "Research_Mycelia_7_C" },
+        { "Toxic Cellular Modification",    "Research_Mycelia_8_C" },
+        
+        // Nutrients
+        { "Paleberry",              "Research_Nutrients_0_C" },
+        { "Beryl Nut",              "Research_Nutrients_1_C" },
+        { "Bacon Agaric",           "Research_Nutrients_2_C" },
+        { "Nutritional Processor",  "Research_Nutrients_3_C" },
+        { "Nutritional Inhaler",    "Research_Nutrients_4_C" },
+        
+        // Power Slugs
+        { "Blue Power Slugs",       "Research_PowerSlugs_1_C" },
+        { "Overclock Production",   "Research_PowerSlugs_2_C" },
+        { "Slug Scanning",          "Research_PowerSlugs_3_C" },
+        { "Yellow Power Shards",    "Research_PowerSlugs_4_C" },
+        { "Purple Power Shards",    "Research_PowerSlugs_5_C" },
+        
+        // Quartz
+        { "Quartz",                             "Research_Quartz_0_C" },
+        { "Quartz Crystals",                    "Research_Quartz_1_1_C" },
+        { "Silica",                             "Research_Quartz_1_2_C" },
+        { "Blade Runners",                      "Research_Caterium_4_3_C" },
+        { "Inflated Pocket Dimension (Quartz)", "Research_Caterium_3_1_C" },
+        { "Crystal Oscillator",                 "Research_Quartz_2_C" },
+        { "Shatter Rebar",                      "Research_Quartz_2_1_C" },
+        { "The Explorer",                       "Research_Quartz_3_1_C" },
+        { "Pulse Nobelisk",                     "Research_Quartz_3_4_C" },
+        { "Radar Technology",                   "Research_Quartz_4_C" },
+        { "Radio Signal Scanning",              "Research_Quartz_4_1_C" },
+
+        // Sulfur
+        { "Sulfur",                             "Research_Sulfur_0_C" },
+        { "Black Powder",                       "Research_Sulfur_1_C" },
+        { "Smokeless Powder",                   "Research_Sulfur_3_C" },
+        { "The Nobelisk Detonator",             "Research_Sulfur_3_1_C" },
+        { "Cluster Nobelisk",                   "Research_Sulfur_4_C" },
+        { "The Rifle",                          "Research_Sulfur_4_1_C" },
+        { "Explosive Rebar",                    "Research_Sulfur_4_2_C" },
+        { "Expanded Toolbelt (Sulfur)",         "Research_Sulfur_5_C" },
+        { "Nuclear Deterrent Development",      "Research_Sulfur_5_1_C" },
+        { "Turbo Rifle Ammo",                   "Research_Sulfur_5_2_C" },
+        { "Inflated Pocket Dimension (Sulfur)", "Research_Sulfur_6_C" },
+        { "Compacted Coal",                     "Research_Sulfur_CompactedCoal_C" },
+        { "Experimental Power Generation",      "Research_Sulfur_ExperimentalPower_C" },
+        { "Turbo Fuel",                         "Research_Sulfur_TurboFuel_C" },
     };
 
     // Aliases
     milestones["HUB Upgrade 4/5"] = milestones["HUB Upgrade 5"];
     milestones["Awesome Sink"]    = milestones["Resource Sink Bonus Program"];
+    milestones["Overclocking"]    = milestones["Overclock Production"];
 
     // Space Elevator
     Dictionary<string, string> packages = new Dictionary<string, string>() {
@@ -161,6 +241,14 @@ update {
 
     // Update list of milestones sent
     // string curr_ = current.game_data.Split(new string[] { "\"e\":[" }, StringSplitOptions.None)[0];
+    // if (current.game_data.Contains("tech_id")) {
+    //     string[] researches = current.game_data.Split(new string[] { "\"tech_id\":\"" }, StringSplitOptions.None);
+    //     foreach (string s in researches) {
+    //         if (!s.Contains("using_mods")) {
+    //             print("[AUTO SPLITTER DATA] "+s);
+    //         }
+    //     }
+    // }
     // print(current.game_data);
     foreach (string value in vars.MilestoneTriggers.Values) {
         if (
