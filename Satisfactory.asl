@@ -168,6 +168,8 @@ startup {
         { "Send Package 4", "EGP_FoodCourt" },
     };
 
+    List<string> special = new List<string>{ "Send Package", "Launch", "Space Elevator", "Package" };
+
     vars.MilestoneTriggers = new Dictionary<string, string>();
     foreach(KeyValuePair<string, string> kv in milestones) {
         vars.MilestoneTriggers[kv.Key.ToLower()] = kv.Value;
@@ -178,10 +180,14 @@ startup {
         vars.PackageTriggers[kv.Key.ToLower()] = kv.Value;
     }
 
+    vars.SpecialSplits = new List<string>();
+    foreach(string split in special) {
+        vars.SpecialSplits.Add(split.ToLower());
+    }
+
     // Settings
     settings.Add("reset_on_exit", true, "Reset timer when exiting game");
     settings.Add("ignore_warnings", false, "Ignore warnings");
-    settings.Add("track_packages", true, "Autosplit packages previously sent before split");
 }
 
 init {
@@ -189,7 +195,8 @@ init {
     foreach (var split in timer.Run) {
         if (
             !vars.MilestoneTriggers.ContainsKey(split.Name.ToLower()) &&
-            !vars.PackageTriggers.ContainsKey(split.Name.ToLower())
+            !vars.PackageTriggers.ContainsKey(split.Name.ToLower()) &&
+            !vars.SpecialSplits.Contains(split.Name.ToLower())
         ) {
             unknownSplits.Add(split.Name);
         }
@@ -215,8 +222,6 @@ init {
     vars.SentMilestones = new List<string>();
     vars.SentPackages = new List<string>();
 
-    vars.MilestonesMonitor = new List<string>();
-
     if (current.game_data != null) {
         print(current.game_data);
     }
@@ -237,6 +242,18 @@ update {
         } else {
             vars.packageTrigger = null;
         }
+
+        // Set specialTrigger if we are waiting for a Space Elevator package to be sent (with a special word)
+        if (
+            timer.CurrentSplit != null && vars.packageTrigger == null &&
+            vars.SpecialSplits.Contains(timer.CurrentSplit.Name.ToLower())
+        ) {
+            vars.specialTrigger = timer.CurrentSplit.Name;
+        } else {
+            vars.specialTrigger = null;
+        }
+
+        
     }
 
     // Update list of milestones sent
@@ -271,6 +288,7 @@ start {
     if (!current.game_data.Contains("\"game_phase\":\"NULL\"")){
         vars.SentMilestones = new List<string>();
         vars.SentPackages = new List<string>();
+        vars.package_count = 0;
         return true;
     }
     return false;
@@ -282,12 +300,19 @@ split {
     }
 
     if (vars.packageTrigger != null) {
-        if (settings["track_packages"] && vars.SentPackages.Contains(vars.packageTrigger)) {
-            return true;
-        } else if (current.game_data.Contains(vars.packageTrigger)) {
+        if (vars.SentPackages.Contains(vars.packageTrigger)) {
+            vars.package_count += 1;
             return true;
         }
     }
+
+    if (vars.specialTrigger != null) {
+        if (vars.SentPackages.Count > vars.package_count) {
+            vars.package_count += 1;
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -301,6 +326,7 @@ reset {
     if (current.game_data.Contains("\"game_phase\":\"NULL\"")) {
         vars.SentMilestones = new List<string>();
         vars.SentPackages = new List<string>();
+        vars.package_count = 0;
         return true;
     }
 
