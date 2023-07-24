@@ -168,18 +168,22 @@ startup {
         { "Send Package 4", "EGP_FoodCourt" },
     };
 
+    // Generic splits for Space Elevator
     List<string> special = new List<string>{ "Send Package", "Launch", "Space Elevator", "Package" };
 
+    // Dictionary of possible MAM / milestone splits
     vars.MilestoneTriggers = new Dictionary<string, string>();
     foreach(KeyValuePair<string, string> kv in milestones) {
         vars.MilestoneTriggers[kv.Key.ToLower()] = kv.Value;
     }
 
+    // Dictionary of possible package splits
     vars.PackageTriggers = new Dictionary<string, string>();
     foreach(KeyValuePair<string, string> kv in packages) {
         vars.PackageTriggers[kv.Key.ToLower()] = kv.Value;
     }
 
+    // List of possible generic package splits
     vars.SpecialSplits = new List<string>();
     foreach(string split in special) {
         vars.SpecialSplits.Add(split.ToLower());
@@ -191,28 +195,32 @@ startup {
 }
 
 init {
-    List<string> unknownSplits = new List<string>();
+    // Check for unrecognized split names
+    List<string> unrecognizedSplits = new List<string>();
     foreach (var split in timer.Run) {
         if (
             !vars.MilestoneTriggers.ContainsKey(split.Name.ToLower()) &&
             !vars.PackageTriggers.ContainsKey(split.Name.ToLower()) &&
             !vars.SpecialSplits.Contains(split.Name.ToLower())
         ) {
-            unknownSplits.Add(split.Name);
+            unrecognizedSplits.Add(split.Name);
         }
     }
-    if (unknownSplits.ToArray().Length > 0 && !settings["ignore_warnings"]) {
+
+    // Warn user about unrecognized split names
+    if (unrecognizedSplits.ToArray().Length > 0 && !settings["ignore_warnings"]) {
         MessageBox.Show(
-            "Split name(s) not recognized: \n" + String.Join("\n", unknownSplits),
+            "Split name(s) not recognized: \n- " + String.Join("\n- ", unrecognizedSplits),
             "AutoSplit Warning",
             MessageBoxButtons.OK,
             MessageBoxIcon.Warning
         );
     }
 
+    // Warn user if they have mods enabled
     if (current.game_data.Contains("\"using_mods\":true") && !settings["ignore_warnings"]) {
         MessageBox.Show(
-            "You currently have mods installed!\nYour run may be invalidated depending on which ones :(",
+            "You currently have mods enabled!\nYour run may be invalidated depending on which ones :(",
             "AutoSplit Warning",
             MessageBoxButtons.OK,
             MessageBoxIcon.Warning
@@ -221,10 +229,7 @@ init {
 
     vars.SentMilestones = new List<string>();
     vars.SentPackages = new List<string>();
-
-    if (current.game_data != null) {
-        print(current.game_data);
-    }
+    vars.package_count = 0;
 }
 
 update {
@@ -252,21 +257,9 @@ update {
         } else {
             vars.specialTrigger = null;
         }
-
-        
     }
 
     // Update list of milestones sent
-    // string curr_ = current.game_data.Split(new string[] { "\"e\":[" }, StringSplitOptions.None)[0];
-    // if (current.game_data.Contains("tech_id")) {
-    //     string[] researches = current.game_data.Split(new string[] { "\"tech_id\":\"" }, StringSplitOptions.None);
-    //     foreach (string s in researches) {
-    //         if (!s.Contains("using_mods")) {
-    //             print("[AUTO SPLITTER DATA] "+s);
-    //         }
-    //     }
-    // }
-    // print(current.game_data);
     foreach (string value in vars.MilestoneTriggers.Values) {
         if (
             !vars.SentMilestones.Contains(value) &&
@@ -285,20 +278,24 @@ update {
 }
 
 start {
+    // Start timer if game_phase exists
     if (!current.game_data.Contains("\"game_phase\":\"NULL\"")){
         vars.SentMilestones = new List<string>();
         vars.SentPackages = new List<string>();
         vars.package_count = 0;
         return true;
     }
+
     return false;
 }
 
 split {
+    // Split if milestone has been sent
     if (vars.milestoneTrigger != null && vars.SentMilestones.Contains(vars.milestoneTrigger)) {
         return true;
     }
 
+    // Split if Space Elevator has been sent
     if (vars.packageTrigger != null) {
         if (vars.SentPackages.Contains(vars.packageTrigger)) {
             vars.package_count += 1;
@@ -306,6 +303,7 @@ split {
         }
     }
 
+    // Split if current split is a special keyword and package was sent
     if (vars.specialTrigger != null) {
         if (vars.SentPackages.Count > vars.package_count) {
             vars.package_count += 1;
