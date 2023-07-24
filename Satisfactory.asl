@@ -1,5 +1,9 @@
 /*
 Satisfactory AutoSplitter
+
+Heavily Inspired By Epiphane's ASL: https://raw.githubusercontent.com/Epiphane/AutoSplitHelper/master/Splitter.asl 
+
+Feel free to join the Satisfactory Speedrunners Discord for any help troubleshooting: https://discord.gg/Uj5y76NqCt
 */
 
 state("FactoryGame-Win64-Shipping") {
@@ -7,25 +11,210 @@ state("FactoryGame-Win64-Shipping") {
 }
 
 startup {
+    Dictionary<string, string> milestones = new Dictionary<string, string>() {
+        // HUB Upgrades (Tier 0)
+        { "HUB Upgrade 1",    "Schematic_Tutorial1_C" },
+        { "HUB Upgrade 2",    "Schematic_Tutorial1_5_C" },
+        { "HUB Upgrade 3",    "Schematic_Tutorial2_C" },
+        { "HUB Upgrade 4",    "Schematic_Tutorial3_C" },
+        { "HUB Upgrade 5",    "Schematic_Tutorial4_C" },
+        { "HUB Upgrade 6",    "Schematic_Tutorial5_C" },
 
+        // Tier 1
+        { "Base Building",    "Schematic_1-1_C" },
+        { "Logistics",        "Schematic_1-2_C" },
+        { "Field Research",   "Schematic_1-3_C" },
+
+        // Tier 2
+        { "Part Assembly",                "Schematic_2-1_C" },
+        { "Obstacle Clearing",            "Schematic_2-2_C" },
+        { "Jump Pads",                    "Schematic_2-3_C" },
+        { "Resource Sink Bonus Program",  "Schematic_2-5_C" },
+
+        // Tier 3
+        { "Coal Power",                   "Schematic_3-1_C" },
+        { "Logistics Mk.2",               "Schematic_3-2_C" },
+        { "Vehicular Transport",          "Schematic_3-3_C" },
+        { "Basic Steel Production",       "Schematic_3-4_C" },
+
+        // Tier 4
+        { "Advanced Steel Production",    "Schematic_4-1_C" },
+        { "Improved Melee Combat",        "Schematic_4-2_C" },
+        { "Hypertubes",                   "Schematic_4-4_C" },
+        { "FICSIT Blueprints",            "Schematic_4-5_C" },
+
+        // Tier 5
+        { "Oil Processing",               "Schematic_5-1_C" },
+        { "Oil Processing 2",             "Schematic_5-1-1_C" },
+        { "Industrial Manufacturing",     "Schematic_5-2_C" },
+        { "Logistics Mk.3",               "Schematic_5-3_C" },
+        { "Alternative Fluid Transport",  "Schematic_5-4_C" },
+        { "Alternative Fluid Transport 2","Schematic_5-4-1_C" },
+
+        // Tier 6
+        { "Expanded Power Infrastructure","Schematic_6-1_C" },
+        { "Jetpack",                      "Schematic_6-2_C" },
+        { "Monorail Train Technology",    "Schematic_6-3_C" },
+        { "Gas Mask",                     "Schematic_6-4_C" },
+        { "Pipeline Engineering Mk.2",    "Schematic_6-5_C" },
+        
+        // Tier 7
+        { "Bauxite Refinement",           "Schematic_7-1_C" },
+        { "Bauxite Refinement 2",         "Schematic_7-1-1_C" },
+        { "Logistics Mk.5",               "Schematic_7-2_C" },
+        { "Hazmat Suit",                  "Schematic_7-3_C" },
+        { "Aeronautical Engineering",     "Schematic_7-4_C" },
+        { "Aeronautical Engineering 2",   "Schematic_7-4-1_C" },
+        
+        // Tier 8
+        { "Nuclear Power",                  "Schematic_8-1_C" },
+        { "Advanced Aluminum Production",   "Schematic_8-2_C" },
+        { "Advanced Aluminum Production 2", "Schematic_8-2-1_C" },
+        { "Hover Pack",                     "Schematic_8-3_C" },
+        { "Leading-edge Production",        "Schematic_8-4_C" },
+        { "Particle Enrichment",            "Schematic_8-5_C" },
+        { "Particle Enrichment 2",          "Schematic_8-5-1_C" },
+    };
+
+    // Aliases
+    milestones["HUB Upgrade 4/5"] = milestones["HUB Upgrade 5"];
+    milestones["Awesome Sink"]    = milestones["Resource Sink Bonus Program"];
+
+    // Space Elevator
+    Dictionary<string, string> packages = new Dictionary<string, string>() {
+        { "Send Package 1", "EGP_MidGame" },
+        { "Send Package 2", "EGP_LateGame" },
+        { "Send Package 3", "EGP_EndGame" },
+        { "Send Package 4", "EGP_FoodCourt" },
+    };
+
+    vars.MilestoneTriggers = new Dictionary<string, string>();
+    foreach(KeyValuePair<string, string> kv in milestones) {
+        vars.MilestoneTriggers[kv.Key.ToLower()] = kv.Value;
+    }
+
+    vars.PackageTriggers = new Dictionary<string, string>();
+    foreach(KeyValuePair<string, string> kv in packages) {
+        vars.PackageTriggers[kv.Key.ToLower()] = kv.Value;
+    }
+
+    // Settings
+    settings.Add("reset_on_exit", true, "Reset timer when exiting game");
+    settings.Add("ignore_warnings", false, "Ignore warnings");
+    settings.Add("track_packages", true, "Autosplit packages previously sent before split");
 }
 
 init {
+    List<string> unknownSplits = new List<string>();
+    foreach (var split in timer.Run) {
+        if (
+            !vars.MilestoneTriggers.ContainsKey(split.Name.ToLower()) &&
+            !vars.PackageTriggers.ContainsKey(split.Name.ToLower())
+        ) {
+            unknownSplits.Add(split.Name);
+        }
+    }
+    if (unknownSplits.ToArray().Length > 0 && !settings["ignore_warnings"]) {
+        MessageBox.Show(
+            "Split name(s) not recognized: \n" + String.Join("\n", unknownSplits),
+            "AutoSplit Warning",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning
+        );
+    }
 
+    if (current.game_data.Contains("\"using_mods\":true") && !settings["ignore_warnings"]) {
+        MessageBox.Show(
+            "You currently have mods installed!\nYour run may be invalidated depending on which ones :(",
+            "AutoSplit Warning",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning
+        );
+    }
+
+    vars.SentMilestones = new List<string>();
+    vars.SentPackages = new List<string>();
+
+    vars.MilestonesMonitor = new List<string>();
+
+    if (current.game_data != null) {
+        print(current.game_data);
+    }
 }
 
 update {
+    if (timer != null) {
+        // Set milestoneTrigger if we are waiting for HUB milestone to be sent
+        if (timer.CurrentSplit != null && vars.MilestoneTriggers.ContainsKey(timer.CurrentSplit.Name.ToLower())) {
+            vars.milestoneTrigger = vars.MilestoneTriggers[timer.CurrentSplit.Name.ToLower()];
+        } else {
+            vars.milestoneTrigger = null;
+        }
 
+        // Set packageTrigger if we are waiting for Space Elevator package to be sent
+        if (timer.CurrentSplit != null && vars.PackageTriggers.ContainsKey(timer.CurrentSplit.Name.ToLower())) {
+            vars.packageTrigger = vars.PackageTriggers[timer.CurrentSplit.Name.ToLower()];
+        } else {
+            vars.packageTrigger = null;
+        }
+    }
+
+    // Update list of milestones sent
+    // string curr_ = current.game_data.Split(new string[] { "\"e\":[" }, StringSplitOptions.None)[0];
+    // print(current.game_data);
+    foreach (string value in vars.MilestoneTriggers.Values) {
+        if (
+            !vars.SentMilestones.Contains(value) &&
+            current.game_data.Contains("\"tech_id\":\""+value+"\"")
+        ) {
+            vars.SentMilestones.Add(value);
+        }
+    }
+
+    // Update list of packages sent
+    foreach (string value in vars.PackageTriggers.Values) {
+        if (!vars.SentPackages.Contains(value) && current.game_data.Contains(value)) {
+            vars.SentPackages.Add(value);
+        }
+    }
 }
 
 start {
-
+    if (!current.game_data.Contains("\"game_phase\":\"NULL\"")){
+        vars.SentMilestones = new List<string>();
+        vars.SentPackages = new List<string>();
+        return true;
+    }
+    return false;
 }
 
 split {
+    if (vars.milestoneTrigger != null && vars.SentMilestones.Contains(vars.milestoneTrigger)) {
+        return true;
+    }
 
+    if (vars.packageTrigger != null) {
+        if (settings["track_packages"] && vars.SentPackages.Contains(vars.packageTrigger)) {
+            return true;
+        } else if (current.game_data.Contains(vars.packageTrigger)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 reset {
+    // Never reset if the setting is disabled
+    if (!settings["reset_on_exit"]) {
+        return false;
+    }
 
+    // Reset if we are not in a game session
+    if (current.game_data.Contains("\"game_phase\":\"NULL\"")) {
+        vars.SentMilestones = new List<string>();
+        vars.SentPackages = new List<string>();
+        return true;
+    }
+
+    return false;
 }
