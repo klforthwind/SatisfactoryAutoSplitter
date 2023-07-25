@@ -8,6 +8,7 @@ Feel free to join the Satisfactory Speedrunners Discord for any help troubleshoo
 
 state("FactoryGame-Win64-Shipping") {
     string4096 game_data : "FactoryGame-DSTelemetry-Win64-Shipping.dll", 0x002FDF98, 0x80, 0x30, 0x60, 0x0;
+    string1024 event_data : "FactoryGame-DSTelemetry-Win64-Shipping.dll", 0x002FDF98, 0x80, 0x30, 0x60, 0x18C;
 }
 
 startup {
@@ -240,6 +241,7 @@ init {
     vars.SentMilestones = new List<string>();
     vars.SentPackages = new List<string>();
     vars.package_count = 0;
+    vars.tutPackages = 0;
 }
 
 update {
@@ -278,12 +280,24 @@ update {
         }
     }
 
+    string[] temp_data = current.game_data.Split(new string[] { "\"e\":[" }, StringSplitOptions.None);
+
+    if (
+        current.event_data.Contains("\"milestone_tier\":-1") &&
+        current.event_data.Contains("\"milestone\":\"NULL\"") &&
+        !old.event_data.Contains("\"milestone_tier\":-1") &&
+        !old.event_data.Contains("\"milestone\":\"NULL\"")
+    ) {
+        vars.tutPackages += 1;
+    }
+
     // Update list of tutorials selected
     foreach (string value in vars.TutorialTriggers.Values) {
         if (
             !vars.SelectedTutorials.Contains(value) &&
-            current.game_data.Contains("\"milestone\":\""+value+"\"")
+            current.event_data.Contains("\"milestone\":\""+value+"\"")
         ) {
+            print("\"milestone\":\""+value+"\"");
             vars.SelectedTutorials.Add(value);
         }
     }
@@ -316,6 +330,7 @@ start {
         vars.SentMilestones = new List<string>();
         vars.SentPackages = new List<string>();
         vars.package_count = 0;
+        vars.tutPackages = 0;
         return true;
     }
 
@@ -327,10 +342,24 @@ split {
     string[] temp_data = current.game_data.Split(new string[] { "\"e\":[" }, StringSplitOptions.None);
     if (
         vars.tutorialTrigger != null &&
-        vars.SelectedTutorials.Contains(vars.tutorialTrigger) &&
-        temp_data[1].Contains("\"milestone_tier\":-1") &&
-        !temp_data[1].Contains(vars.tutorialTrigger)
+        vars.SelectedTutorials.Count < vars.tutPackages - 1
+
+        // vars.SelectedTutorials.Contains(vars.tutorialTrigger) &&
+        // temp_data[1].Contains("\"milestone_tier\":-1") &&
+        // temp_data[1].Contains("\"milestone\":\"NULL\"") &&
+        // !temp_data[1].Contains(vars.tutorialTrigger)
+
+
+        // temp_data[1].Contains("\"milestone_tier\":-1") &&
+        // temp_data[1].Contains("\"milestone\":\"NULL\"") &&
+        // temp_data[0].Contains(vars.tutorialTrigger)
+
+        // vars.SelectedTutorials.Contains(vars.tutorialTrigger) &&
+        // temp_data[1].Contains("\"milestone_tier\":-1") &&
+        // !temp_data[1].Contains(vars.tutorialTrigger)
     ) {
+        vars.SelectedTutorials.Add(vars.tutorialTrigger);
+        print(vars.tutPackages.ToString());
         return true;
     }
 
@@ -370,6 +399,7 @@ reset {
         vars.SentMilestones = new List<string>();
         vars.SentPackages = new List<string>();
         vars.package_count = 0;
+        vars.tutPackages = 0;
         return true;
     }
 

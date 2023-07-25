@@ -1,0 +1,49 @@
+
+// Sending HUB 1
+{"s":{"using_mods":true,"milestone_tier":-1,"gid":"Satisfactory","sec":365,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"NULL","map":"Grass Fields","using_cheats":true},"e":[
+
+
+// Selecting HUB Upgrade 2
+{"s":{"using_mods":true,"milestone_tier":0,"gid":"Satisfactory","sec":288,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"Schematic_Tutorial1_5_C","map":"Grass Fields","using_cheats":true},"e":[
+
+// Losing my Sanity
+"type":"tsc","t":1690294394610,"d":{"milestone":"Schematic_Tutorial1_5_C"}},{"type":"tsc","t":1690294394610,"d":{"milestone_tier":0}}]}
+
+{"s":{"using_mods":true,"milestone_tier":-1,"gid":"Satisfactory","sec":397,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"NULL","map":"Grass Fields","using_cheats":true},"e":[
+
+{"s":{"using_mods":true,"milestone_tier":0,"gid":"Satisfactory","sec":400,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"Schematic_Tutorial3_C","map":"Grass Fields","using_cheats":true},"e":[{"type":"tsc","t":1690294493667,"d":{"milestone":"NULL"}},{"type":"tsc","t":1690294493667,"d":{"milestone_tier":-1}}
+
+
+
+// Sending HUB Upgrade 2
+
+{"s":{"using_mods":true,"milestone_tier":0,"gid":"Satisfactory","sec":288,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"Schematic_Tutorial1_5_C","map":"Grass Fields","using_cheats":true},"e":[{"type":"tsc","t":1690293633176,"d":{"milestone":"NULL"}},{"type":"tsc","t":1690293633176,"d":{"milestone_tier":-1}}
+
+// Sending HUB Upgrade 3
+{"s":{"using_mods":true,"milestone_tier":0,"gid":"Satisfactory","sec":292,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"Schematic_Tutorial2_C","map":"Grass Fields","using_cheats":true},"e":[{"type":"tsc","t":1690293682605,"d":{"milestone":"NULL"}},{"type":"tsc","t":1690293682605,"d":{"milestone_tier":-1}}
+
+
+
+// Selecting HUB Upgrade 1
+{"s":{"using_mods":true,"milestone_tier":0,"gid":"Satisfactory","sec":282,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"Schematic_Tutorial1_C","map":"Grass Fields","using_cheats":true},"e":[
+
+
+// Sending HUB upgrade 1
+{"s":{"using_mods":true,"milestone_tier":0,"gid":"Satisfactory","sec":283,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"Schematic_Tutorial1_C","map":"Grass Fields","using_cheats":true},"e":[{"type":"tsc","t":1690293308269,"d":{"milestone":"NULL"}},{"type":"tsc","t":1690293308269,"d":{"milestone_tier":-1}}
+
+
+// Selecting Hub Upgrade 1
+{"s":{"using_mods":true,"milestone_tier":-1,"gid":"Satisfactory","sec":231,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"NULL","map":"Grass Fields","using_cheats":true},"e":[{"type":"tsc","t":1690292926686,"d":{"milestone":"Schematic_Tutorial1_C"}},{"type":"tsc","t":1690292926686,"d":{"milestone_tier":0}}
+
+
+// Sending Hub Upgrade 1 and Selecting Hub Upgrade 2
+{"s":{"using_mods":true,"milestone_tier":0,"gid":"Satisfactory","sec":233,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"Schematic_Tutorial1_C","map":"Grass Fields","using_cheats":true},"e":[{"type":"tsc","t":1690292956685,"d":{"milestone":"NULL"}},{"type":"tsc","t":1690292956685,"d":{"milestone_tier":-1}},{"type":"tsc","t":1690292958148,"d":{"milestone":"Schematic_Tutorial1_5_C"}},{"type":"tsc","t":1690292958148,"d":{"milestone_tier":0}}
+
+
+// Selecting and Sending both Upgrade 1 & 2
+{"s":{"using_mods":true,"milestone_tier":0,"gid":"Satisfactory","sec":259,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"Schematic_Tutorial1_5_C","map":"Grass Fields","using_cheats":true},"e":[{"type":"tsc","t":1690293101932,"d":{"milestone":"NULL"}},{"type":"tsc","t":1690293101932,"d":{"milestone_tier":-1}}
+
+{"s":{"using_mods":true,"milestone_tier":-1,"gid":"Satisfactory","sec":265,"mp_state":"listen server","game_phase":"EGP_EarlyGame","pid":"Windows-steam","biome":"Area_GrassFields_3_C","uid":"05dea813037f88efa5fc00b9a96258881f88bda21a03250cc4509a35b947bb76","num_players":1,"save_game_id":"VQZ28ed8nUCaIVOsF89HwQ","bid":"211839-2.4.9","milestone":"NULL","map":"Grass Fields","using_cheats":true},"e":[
+
+
+
