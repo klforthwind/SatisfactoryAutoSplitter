@@ -11,7 +11,7 @@ state("FactoryGame-Win64-Shipping") {
 }
 
 startup {
-    Dictionary<string, string> milestones = new Dictionary<string, string>() {
+    Dictionary<string, string> tutorial = new Dictionary<string, string>() {
         // HUB Upgrades (Tier 0)
         { "HUB Upgrade 1",    "Schematic_Tutorial1_C" },
         { "HUB Upgrade 2",    "Schematic_Tutorial1_5_C" },
@@ -19,7 +19,9 @@ startup {
         { "HUB Upgrade 4",    "Schematic_Tutorial3_C" },
         { "HUB Upgrade 5",    "Schematic_Tutorial4_C" },
         { "HUB Upgrade 6",    "Schematic_Tutorial5_C" },
+    };
 
+    Dictionary<string, string> milestones = new Dictionary<string, string>() {
         // Tier 1
         { "Base Building",    "Schematic_1-1_C" },
         { "Logistics",        "Schematic_1-2_C" },
@@ -156,7 +158,7 @@ startup {
     };
 
     // Aliases
-    milestones["HUB Upgrade 4/5"] = milestones["HUB Upgrade 5"];
+    tutorial["HUB Upgrade 4/5"] = tutorial["HUB Upgrade 5"];
     milestones["Awesome Sink"]    = milestones["Resource Sink Bonus Program"];
     milestones["Overclocking"]    = milestones["Overclock Production"];
 
@@ -170,6 +172,12 @@ startup {
 
     // Generic splits for Space Elevator
     List<string> special = new List<string>{ "Send Package", "Launch", "Space Elevator", "Package" };
+
+    // Dictionary of possible tutorial splits
+    vars.TutorialTriggers = new Dictionary<string, string>();
+    foreach(KeyValuePair<string, string> kv in tutorial) {
+        vars.TutorialTriggers[kv.Key.ToLower()] = kv.Value;
+    }
 
     // Dictionary of possible MAM / milestone splits
     vars.MilestoneTriggers = new Dictionary<string, string>();
@@ -199,6 +207,7 @@ init {
     List<string> unrecognizedSplits = new List<string>();
     foreach (var split in timer.Run) {
         if (
+            !vars.TutorialTriggers.ContainsKey(split.Name.ToLower()) &&
             !vars.MilestoneTriggers.ContainsKey(split.Name.ToLower()) &&
             !vars.PackageTriggers.ContainsKey(split.Name.ToLower()) &&
             !vars.SpecialSplits.Contains(split.Name.ToLower())
@@ -227,23 +236,33 @@ init {
         );
     }
 
+    vars.SelectedTutorials = new List<string>();
     vars.SentMilestones = new List<string>();
     vars.SentPackages = new List<string>();
     vars.package_count = 0;
 }
 
 update {
-    if (timer != null) {
+    if (timer != null && timer.CurrentSplit != null) {
+        var splitNameLower = timer.CurrentSplit.Name.ToLower();
+
+        // Set tutorialTrigger if we are waiting for HUB milestone to be sent
+        if (timer.CurrentSplit != null && vars.TutorialTriggers.ContainsKey(splitNameLower)) {
+            vars.tutorialTrigger = vars.TutorialTriggers[splitNameLower];
+        } else {
+            vars.tutorialTrigger = null;
+        }
+
         // Set milestoneTrigger if we are waiting for HUB milestone to be sent
-        if (timer.CurrentSplit != null && vars.MilestoneTriggers.ContainsKey(timer.CurrentSplit.Name.ToLower())) {
-            vars.milestoneTrigger = vars.MilestoneTriggers[timer.CurrentSplit.Name.ToLower()];
+        if (timer.CurrentSplit != null && vars.MilestoneTriggers.ContainsKey(splitNameLower)) {
+            vars.milestoneTrigger = vars.MilestoneTriggers[splitNameLower];
         } else {
             vars.milestoneTrigger = null;
         }
 
         // Set packageTrigger if we are waiting for Space Elevator package to be sent
-        if (timer.CurrentSplit != null && vars.PackageTriggers.ContainsKey(timer.CurrentSplit.Name.ToLower())) {
-            vars.packageTrigger = vars.PackageTriggers[timer.CurrentSplit.Name.ToLower()];
+        if (timer.CurrentSplit != null && vars.PackageTriggers.ContainsKey(splitNameLower)) {
+            vars.packageTrigger = vars.PackageTriggers[splitNameLower];
         } else {
             vars.packageTrigger = null;
         }
@@ -251,11 +270,21 @@ update {
         // Set specialTrigger if we are waiting for a Space Elevator package to be sent (with a special word)
         if (
             timer.CurrentSplit != null && vars.packageTrigger == null &&
-            vars.SpecialSplits.Contains(timer.CurrentSplit.Name.ToLower())
+            vars.SpecialSplits.Contains(splitNameLower)
         ) {
             vars.specialTrigger = timer.CurrentSplit.Name;
         } else {
             vars.specialTrigger = null;
+        }
+    }
+
+    // Update list of tutorials selected
+    foreach (string value in vars.TutorialTriggers.Values) {
+        if (
+            !vars.SelectedTutorials.Contains(value) &&
+            current.game_data.Contains("\"milestone\":\""+value+"\"")
+        ) {
+            vars.SelectedTutorials.Add(value);
         }
     }
 
@@ -283,6 +312,7 @@ start {
         current.game_data.Contains("\"game_phase\"") &&
         !current.game_data.Contains("\"game_phase\":\"NULL\"")
     ){
+        vars.SelectedTutorials = new List<string>();
         vars.SentMilestones = new List<string>();
         vars.SentPackages = new List<string>();
         vars.package_count = 0;
@@ -293,6 +323,23 @@ start {
 }
 
 split {
+
+    string[] temp_data = current.game_data.Split(new string[] { "\"e\":[" }, StringSplitOptions.None);
+    // print(temp_data[1]);
+    // Split if selected tutorial gets finished
+    if (
+        vars.tutorialTrigger != null &&
+        // temp_data[1].Contains(vars.tutorialTrigger) &&
+        // old.game_data.Contains("\"milestone\":\"NULL\"") 
+        vars.SelectedTutorials.Contains(vars.tutorialTrigger) &&
+        // !current.game_data.Contains("\"milestone\":\""+vars.tutorialTrigger+"\"") &&
+        temp_data[1].Contains("\"milestone_tier\":-1")
+        // temp_data[1].Contains("\"milestone\":\"NULL\"") 
+    ) {
+        print(current.game_data);
+        return true;
+    }
+
     // Split if milestone has been sent
     if (vars.milestoneTrigger != null && vars.SentMilestones.Contains(vars.milestoneTrigger)) {
         return true;
@@ -325,6 +372,7 @@ reset {
 
     // Reset if we are not in a game session
     if (current.game_data.Contains("\"game_phase\":\"NULL\"")) {
+        vars.SelectedTutorials = new List<string>();
         vars.SentMilestones = new List<string>();
         vars.SentPackages = new List<string>();
         vars.package_count = 0;
