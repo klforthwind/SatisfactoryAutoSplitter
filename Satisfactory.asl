@@ -323,20 +323,13 @@ start {
 }
 
 split {
-
+    // Split if milestone has been sent
     string[] temp_data = current.game_data.Split(new string[] { "\"e\":[" }, StringSplitOptions.None);
-    // print(temp_data[1]);
-    // Split if selected tutorial gets finished
     if (
         vars.tutorialTrigger != null &&
-        // temp_data[1].Contains(vars.tutorialTrigger) &&
-        // old.game_data.Contains("\"milestone\":\"NULL\"") 
         vars.SelectedTutorials.Contains(vars.tutorialTrigger) &&
-        // !current.game_data.Contains("\"milestone\":\""+vars.tutorialTrigger+"\"") &&
         temp_data[1].Contains("\"milestone_tier\":-1")
-        // temp_data[1].Contains("\"milestone\":\"NULL\"") 
     ) {
-        print(current.game_data);
         return true;
     }
 
