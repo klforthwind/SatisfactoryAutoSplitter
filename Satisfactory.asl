@@ -279,7 +279,10 @@ update {
 
 start {
     // Start timer if game_phase exists
-    if (!current.game_data.Contains("\"game_phase\":\"NULL\"")){
+    if (
+        current.game_data.Contains("\"game_phase\"") &&
+        !current.game_data.Contains("\"game_phase\":\"NULL\"")
+    ){
         vars.SentMilestones = new List<string>();
         vars.SentPackages = new List<string>();
         vars.package_count = 0;
