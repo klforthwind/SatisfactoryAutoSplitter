@@ -328,8 +328,7 @@ split {
     if (
         vars.tutorialTrigger != null &&
         vars.SelectedTutorials.Contains(vars.tutorialTrigger) &&
-        temp_data[1].Contains("\"milestone_tier\":-1") &&
-        !temp_data[1].Contains(vars.tutorialTrigger)
+        temp_data[1].Contains("\"milestone_tier\":-1")
     ) {
         return true;
     }
