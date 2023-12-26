@@ -8,6 +8,8 @@ Feel free to join the Satisfactory Speedrunners Discord for any help troubleshoo
 
 state("FactoryGame-Win64-Shipping") {
     string4096 game_data : "FactoryGame-DSTelemetry-Win64-Shipping.dll", 0x002FDF98, 0x80, 0x30, 0x60, 0x0;
+    int isIntroRunning : "FactoryGame-Core-Win64-Shipping.dll", 0x00601E68, 0x18, 0x40, 0x0, 0x140, 0x38, 0xE0;
+    int skipIntroSelected : "FactoryGame-Core-Win64-Shipping.dll", 0x00634EA8, 0x38, 0x30, 0x68, 0x270, 0x3A8, 0x360, 0x30;
 }
 
 startup {
@@ -21,6 +23,7 @@ startup {
         { "HUB Upgrade 6",    "Schematic_Tutorial5_C" },
     };
 
+    // HUB Milestones and MAM Research
     Dictionary<string, string> milestones = new Dictionary<string, string>() {
         // Tier 1
         { "Base Building",    "Schematic_1-1_C" },
@@ -157,11 +160,6 @@ startup {
         { "Turbo Fuel",                         "Research_Sulfur_TurboFuel_C" },
     };
 
-    // Aliases
-    tutorial["HUB Upgrade 4/5"] = tutorial["HUB Upgrade 5"];
-    milestones["Awesome Sink"]    = milestones["Resource Sink Bonus Program"];
-    milestones["Overclocking"]    = milestones["Overclock Production"];
-
     // Space Elevator
     Dictionary<string, string> packages = new Dictionary<string, string>() {
         { "Send Package 1", "EGP_MidGame" },
@@ -169,6 +167,15 @@ startup {
         { "Send Package 3", "EGP_EndGame" },
         { "Send Package 4", "EGP_FoodCourt" },
     };
+
+    // Aliases
+    tutorial["HUB Upgrade 4/5"] = tutorial["HUB Upgrade 5"];
+    milestones["Awesome Sink"]  = milestones["Resource Sink Bonus Program"];
+    milestones["Overclocking"]  = milestones["Overclock Production"];
+    packages["P1"] = packages["Send Package 1"];
+    packages["P2"] = packages["Send Package 2"];
+    packages["P3"] = packages["Send Package 3"];
+    packages["P4"] = packages["Send Package 4"];
 
     // Generic splits for Space Elevator
     List<string> special = new List<string>{ "Send Package", "Launch", "Space Elevator", "Package" };
@@ -199,7 +206,13 @@ startup {
 
     // Settings
     settings.Add("reset_on_exit", true, "Reset timer when exiting game");
-    settings.Add("ignore_warnings", false, "Ignore warnings");
+    settings.Add("ignore_warnings", false, "Ignore autosplitter warnings");
+
+    // Variables to keep track of game progress
+    vars.SelectedTutorials = new List<string>();
+    vars.SentMilestones = new List<string>();
+    vars.SentPackages = new List<string>();
+    vars.package_count = 0;
 }
 
 init {
@@ -235,11 +248,6 @@ init {
             MessageBoxIcon.Warning
         );
     }
-
-    vars.SelectedTutorials = new List<string>();
-    vars.SentMilestones = new List<string>();
-    vars.SentPackages = new List<string>();
-    vars.package_count = 0;
 }
 
 update {
@@ -247,38 +255,35 @@ update {
         var splitNameLower = timer.CurrentSplit.Name.ToLower();
 
         // Set tutorialTrigger if we are waiting for HUB milestone to be sent
-        if (timer.CurrentSplit != null && vars.TutorialTriggers.ContainsKey(splitNameLower)) {
+        if (vars.TutorialTriggers.ContainsKey(splitNameLower)) {
             vars.tutorialTrigger = vars.TutorialTriggers[splitNameLower];
         } else {
             vars.tutorialTrigger = null;
         }
 
-        // Set milestoneTrigger if we are waiting for HUB milestone to be sent
-        if (timer.CurrentSplit != null && vars.MilestoneTriggers.ContainsKey(splitNameLower)) {
+        // Set milestoneTrigger if we are waiting for HUB milestone / MAM research to be sent
+        if (vars.MilestoneTriggers.ContainsKey(splitNameLower)) {
             vars.milestoneTrigger = vars.MilestoneTriggers[splitNameLower];
         } else {
             vars.milestoneTrigger = null;
         }
 
         // Set packageTrigger if we are waiting for Space Elevator package to be sent
-        if (timer.CurrentSplit != null && vars.PackageTriggers.ContainsKey(splitNameLower)) {
+        if (vars.PackageTriggers.ContainsKey(splitNameLower)) {
             vars.packageTrigger = vars.PackageTriggers[splitNameLower];
         } else {
             vars.packageTrigger = null;
         }
 
         // Set specialTrigger if we are waiting for a Space Elevator package to be sent (with a special word)
-        if (
-            timer.CurrentSplit != null && vars.packageTrigger == null &&
-            vars.SpecialSplits.Contains(splitNameLower)
-        ) {
+        if (vars.SpecialSplits.Contains(splitNameLower)) {
             vars.specialTrigger = timer.CurrentSplit.Name;
         } else {
             vars.specialTrigger = null;
         }
     }
 
-    // Update list of tutorials selected
+    // Update list of tutorials (HUB Tier 0 milestones) selected
     foreach (string value in vars.TutorialTriggers.Values) {
         if (
             !vars.SelectedTutorials.Contains(value) &&
@@ -288,7 +293,7 @@ update {
         }
     }
 
-    // Update list of milestones sent
+    // Update list of milestones (HUB milestones & MAM research) sent
     foreach (string value in vars.MilestoneTriggers.Values) {
         if (
             !vars.SentMilestones.Contains(value) &&
@@ -307,10 +312,11 @@ update {
 }
 
 start {
-    // Start timer if game_phase exists
+    // Start timer if game_phase exists and intro cutscene is over
     if (
         current.game_data.Contains("\"game_phase\"") &&
-        !current.game_data.Contains("\"game_phase\":\"NULL\"")
+        !current.game_data.Contains("\"game_phase\":\"NULL\"") &&
+        (current.isIntroRunning != 1)
     ){
         vars.SelectedTutorials = new List<string>();
         vars.SentMilestones = new List<string>();
